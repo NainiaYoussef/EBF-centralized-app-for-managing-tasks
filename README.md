@@ -50,6 +50,51 @@ The platform features two main interfaces:
 
 ---
 
-## Installation & Setup
+5. Access client and admin interfaces via the configured URLs or localhost ports.
 
-1. Clone the repository:
+---
+
+## Usage
+
+- Clients can register bookings, apply for jobs or internships, and browse agency content via the frontend.
+- Admins securely log in to manage and oversee all submissions, absences, and content.
+- Uploaded CVs are securely stored and accessible through the admin dashboard.
+- Absence tracking features highlight users with multiple unauthorized absences for proactive management.
+
+---
+
+## Project Structure
+
+- Frontend: dashboard, booking forms, application forms, blog, and content pages.
+- Backend: data processing, file uploads, and API endpoints.
+- Data Storage: JSON files as a lightweight database.
+
+---
+
+## Contribution
+
+This project was developed as an internship assignment and is currently maintained by the original developer. Contributions via pull requests are welcome to extend functionality or improve existing features.
+
+---
+
+## Acknowledgments
+
+Special thanks to THE supervisors and team of EBF, particularly Mrs. Malak Menhal
+---
+
+## License
+
+APACHE 2.0
+
+---
+
+## References
+
+- Mozilla Developer Network (MDN) for HTML, CSS, and JavaScript documentation.
+- Bootstrap 5, Express.js, Chart.js, Multer official documentation.
+- Additional tutorials and online resources.
+
+---
+
+*This README summarizes the project corresponding to the internship report on the design and development of a centralized web application for Emerging Business Factory (EBF) conducted in the academic year 2024/2025.*
+
