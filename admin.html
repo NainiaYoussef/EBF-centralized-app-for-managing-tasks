@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EBF Admin Dashboard</title>
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700;900&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body {
+      min-height: 100vh;
+      margin: 0;
+      font-family: 'Nunito', 'Heebo', Arial, sans-serif;
+      background: linear-gradient(135deg, #18191a 0%, #232526 100%);
+      background-size: 400% 400%;
+      animation: gradientBG 12s ease-in-out infinite;
+      display: flex;
+      flex-direction: column;
+    }
+    @keyframes gradientBG {
+      0% {background-position: 0% 50%;}
+      50% {background-position: 100% 50%;}
+      100% {background-position: 0% 50%;}
+    }
+    .glass-card {
+      background: rgba(255,255,255,0.18);
+      box-shadow: 0 8px 32px 0 rgba(31,38,135,0.18);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 1.5rem;
+      border: 1.5px solid rgba(255,255,255,0.25);
+      padding: 2.5rem 2rem 2rem 2rem;
+      margin: 3.5rem auto 2rem auto;
+      max-width: 400px;
+      position: relative;
+      z-index: 2;
+      text-align: center;
+    }
+    .glass-card .logo {
+      width: 90px;
+      margin-bottom: 1.2rem;
+      filter: drop-shadow(0 2px 12px #fb873f44);
+    }
+    .glass-card h1 {
+      font-family: 'Heebo', Arial, sans-serif;
+      font-size: 2.1rem;
+      font-weight: 900;
+      color: #fff;
+      letter-spacing: -1px;
+      margin-bottom: 0.7rem;
+      text-shadow: 0 2px 12px rgba(0,0,0,0.18);
+    }
+    .glass-card .subtitle {
+      color: #fb873f;
+      font-weight: 700;
+      font-size: 1.1rem;
+      margin-bottom: 2.2rem;
+      letter-spacing: 0.5px;
+    }
+    .form-floating > .form-control {
+      background: rgba(255,255,255,0.7);
+      border-radius: 1rem;
+      border: none;
+      box-shadow: 0 2px 8px rgba(80,40,40,0.04);
+      margin-bottom: 1.2rem;
+      font-size: 1.1rem;
+    }
+    .form-floating > label {
+      color: #1a2952;
+      font-weight: 600;
+      left: 1.1rem;
+    }
+    .glass-card .btn-primary {
+      background: linear-gradient(90deg, #fb873f, #343a40);
+      border: none;
+      border-radius: 2rem;
+      font-weight: 700;
+      font-size: 1.1rem;
+      padding: 0.7rem 2.2rem;
+      box-shadow: 0 2px 12px #fb873f33;
+      transition: background 0.2s;
+    }
+    .glass-card .btn-primary:hover {
+      background: linear-gradient(90deg, #343a40, #fb873f);
+    }
+    .animated-accent {
+      position: absolute;
+      top: -40px; left: -40px;
+      width: 120px; height: 120px;
+      background: linear-gradient(135deg, #fb873f99 0%, #fff0 100%);
+      border-radius: 50%;
+      filter: blur(12px);
+      z-index: 1;
+      animation: floatAccent 6s ease-in-out infinite alternate;
+    }
+    @keyframes floatAccent {
+      0% { transform: translateY(0) scale(1); }
+      100% { transform: translateY(30px) scale(1.1); }
+    }
+    .glass-navbar {
+      background: rgba(255,255,255,0.18);
+      box-shadow: 0 4px 16px rgba(31,38,135,0.10);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 2.5px solid #fb873f;
+      border-radius: 0 0 1.2rem 1.2rem;
+      margin-bottom: 2.5rem;
+      padding: 0.7rem 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .glass-navbar .navbar-brand img {
+      height: 60px;
+    }
+    .glass-navbar .nav {
+      gap: 0.7rem;
+    }
+    .glass-navbar .nav-link {
+      color: #1a2952;
+      font-weight: 700;
+      border-radius: 2rem;
+      padding: 0.5rem 1.3rem;
+      font-size: 1.08rem;
+      transition: background 0.2s, color 0.2s;
+    }
+    .glass-navbar .nav-link.active, .glass-navbar .nav-link:hover {
+      background: linear-gradient(90deg, #fb873f, #343a40);
+      color: #fff;
+    }
+    .admin-content-card {
+      background: rgba(255,255,255,0.92);
+      border-radius: 1.2rem;
+      box-shadow: 0 4px 32px rgba(80,40,40,0.07);
+      padding: 2.5rem 2rem;
+      margin-bottom: 2.5rem;
+    }
+    .table thead { background: #fb873f; color: #fff; }
+    .table { border-radius: 1rem; overflow: hidden; }
+    .table-responsive { max-height: 420px; overflow-y: auto; }
+    .table-striped > tbody > tr:nth-of-type(odd) { background-color: #f8f9fa; }
+    .table-hover tbody tr:hover { background: #ffe5d0; }
+    .alert-top { position: fixed; top: 0; left: 0; right: 0; z-index: 9999; border-radius: 0; }
+    footer {
+      background: #18191a; color: #fff; margin-top: auto; padding: 2.5rem 0 1.5rem 0;
+    }
+    footer a { color: #fb873f; text-decoration: none; }
+    @media (max-width: 600px) {
+      .glass-card { padding: 1.2rem 0.5rem; }
+      .admin-content-card { padding: 1.2rem 0.5rem; }
+      .glass-navbar { padding: 0.5rem 0.5rem; }
+      .glass-navbar .navbar-brand img { height: 40px; }
+    }
+    .navbar .nav-link.active, .navbar .nav-link:hover {
+      background: #fb873f !important;
+      color: #fff !important;
+    }
+    .navbar-nav .nav-link {
+      color: #18191a !important;
+      background: none !important;
+      font-size: 1.1rem !important;
+      padding: 1.1rem 1.7rem !important;
+      border-radius: 0 !important;
+      transition: color 0.2s;
+    }
+    .navbar-nav .nav-link.active,
+    .navbar-nav .nav-link:focus,
+    .navbar-nav .nav-link:hover {
+      color: #fb873f !important;
+      background: none !important;
+      box-shadow: none !important;
+    }
+    .navbar-nav .nav-link.text-danger {
+      color: #ef4444 !important;
+    }
+    @media (max-width: 991.98px) {
+      .navbar-collapse {
+        background: #fff !important;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="animated-accent"></div>
+  <div id="alert-container"></div>
+  <div id="loginSection" style="display: flex; align-items: center; justify-content: center; min-height: 90vh;">
+    <div style="background: #fff; border-radius: 1.5rem; box-shadow: 0 8px 32px 0 rgba(31,38,135,0.18); padding: 2.5rem 2rem 2rem 2rem; max-width: 400px; width: 100%; text-align: center;">
+      <img src="img/ik.png" alt="EBF Logo" style="width: 90px; margin-bottom: 1.2rem; filter: drop-shadow(0 2px 12px #fb873f44);">
+      <h1 style="font-family: 'Heebo', Arial, sans-serif; font-size: 2.1rem; font-weight: 900; color: #18191a; letter-spacing: -1px; margin-bottom: 0.7rem;">Welcome to Admin Space</h1>
+      <div style="color: #fb873f; font-weight: 700; font-size: 1.1rem; margin-bottom: 2.2rem; letter-spacing: 0.5px;">Emerging Business Factory</div>
+      <form id="adminLoginForm">
+        <div class="form-floating">
+          <input type="text" class="form-control" id="adminUsername" placeholder="Username" required>
+          <label for="adminUsername">Username</label>
+        </div>
+        <div class="form-floating">
+          <input type="password" class="form-control" id="adminPassword" placeholder="Password" required>
+          <label for="adminPassword">Password</label>
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Login</button>
+      </form>
+    </div>
+  </div>
+  <div id="dashboardSection" class="d-none" style="background: #fff; min-height: 100vh;">
+    <nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0" style="height: 120px; border-radius: 0; border-bottom: 4px solid; border-image: linear-gradient(90deg, #fb873f, #343a40) 1; background: #fff !important;">
+      <a href="#" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
+        <img src="img/Emerging business factory.png" alt="Emerging Business Factory" style="height: 120px; width: auto;">
+      </a>
+      <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#adminNavbarCollapse">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="adminNavbarCollapse">
+        <div class="navbar-nav ms-auto p-4 p-lg-0">
+          <a href="#" id="nav-bookings" class="nav-item nav-link active">Bookings</a>
+          <a href="#" id="nav-jobapps" class="nav-item nav-link">Job Applications</a>
+          <a href="#" id="nav-internapps" class="nav-item nav-link">Intern Applications</a>
+          <a href="#" id="logoutBtn" class="nav-item nav-link text-danger">Logout</a>
+        </div>
+      </div>
+    </nav>
+    <div class="container" style="max-width: 1300px;">
+      <div class="admin-content-card">
+        <div id="bookingsSection"></div>
+        <div id="jobAppsSection" class="d-none"></div>
+        <div id="internAppsSection" class="d-none"></div>
+        <!-- DASHBOARD VISUAL COMPONENTS START -->
+        <div id="dashboardVisuals" class="container-fluid py-2" style="background: #f8f9fa; min-height: 0; display: none;">
+          <div class="row g-3 mb-2">
+            <!-- Summary Cards -->
+            <div class="col-12">
+              <div class="row g-3">
+                <div class="col-6 col-lg-3">
+                  <div class="card shadow-sm border-0 text-center p-3" style="border-radius: 1rem;">
+                    <div style="font-size: 2.1rem; color: #fb873f;"><i class="fa fa-briefcase"></i></div>
+                    <div style="font-weight: 700; font-size: 1.2rem;">Job Apps</div>
+                    <div style="font-size: 1.7rem; font-weight: 900;">128</div>
+                  </div>
+                </div>
+                <div class="col-6 col-lg-3">
+                  <div class="card shadow-sm border-0 text-center p-3" style="border-radius: 1rem;">
+                    <div style="font-size: 2.1rem; color: #3b82f6;"><i class="fa fa-user-graduate"></i></div>
+                    <div style="font-weight: 700; font-size: 1.2rem;">Intern Apps</div>
+                    <div style="font-size: 1.7rem; font-weight: 900;">92</div>
+                  </div>
+                </div>
+                <div class="col-6 col-lg-3">
+                  <div class="card shadow-sm border-0 text-center p-3" style="border-radius: 1rem;">
+                    <div style="font-size: 2.1rem; color: #10b981;"><i class="fa fa-calendar-check"></i></div>
+                    <div style="font-weight: 700; font-size: 1.2rem;">Upcoming Bookings</div>
+                    <div style="font-size: 1.7rem; font-weight: 900;">7</div>
+                  </div>
+                </div>
+                <div class="col-6 col-lg-3">
+                  <div class="card shadow-sm border-0 text-center p-3" style="border-radius: 1rem;">
+                    <div style="font-size: 2.1rem; color: #f59e42;"><i class="fa fa-hourglass-half"></i></div>
+                    <div style="font-weight: 700; font-size: 1.2rem;">Pending Reviews</div>
+                    <div style="font-size: 1.7rem; font-weight: 900;">14</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row g-3 mb-2">
+            <!-- Calendar Widget -->
+            <div class="col-lg-4">
+              <div class="card shadow-sm border-0 p-3" style="border-radius: 1rem;">
+                <div style="font-weight: 700; font-size: 1.15rem; margin-bottom: 1rem;">Upcoming Events</div>
+                <div id="mockCalendar" style="background: #fff6f2; border-radius: 0.7rem; padding: 1.2rem;">
+                  <div style="font-weight: 700; color: #fb873f; font-size: 1.1rem;">July 2024</div>
+                  <div style="display: flex; flex-wrap: wrap; gap: 2px; margin-bottom: 1rem;">
+                    <span style="width:2em;text-align:center;">Mon</span><span style="width:2em;text-align:center;">Tue</span><span style="width:2em;text-align:center;">Wed</span><span style="width:2em;text-align:center;">Thu</span><span style="width:2em;text-align:center;">Fri</span><span style="width:2em;text-align:center;">Sat</span><span style="width:2em;text-align:center;">Sun</span>
+                    <!-- Mock days -->
+                    <span style="width:2em;text-align:center;opacity:0.3;">1</span><span style="width:2em;text-align:center;">2</span><span style="width:2em;text-align:center;">3</span><span style="width:2em;text-align:center;">4</span><span style="width:2em;text-align:center;">5</span><span style="width:2em;text-align:center;">6</span><span style="width:2em;text-align:center;">7</span>
+                    <span style="width:2em;text-align:center;">8</span><span style="width:2em;text-align:center;">9</span><span style="width:2em;text-align:center;">10</span><span style="width:2em;text-align:center;">11</span><span style="width:2em;text-align:center;">12</span><span style="width:2em;text-align:center;">13</span><span style="width:2em;text-align:center;">14</span>
+                    <span style="width:2em;text-align:center;">15</span><span style="width:2em;text-align:center;">16</span><span style="width:2em;text-align:center;">17</span><span style="width:2em;text-align:center;">18</span><span style="width:2em;text-align:center;">19</span><span style="width:2em;text-align:center;">20</span><span style="width:2em;text-align:center;">21</span>
+                    <span style="width:2em;text-align:center;">22</span><span style="width:2em;text-align:center;">23</span><span style="width:2em;text-align:center;">24</span><span style="width:2em;text-align:center;">25</span><span style="width:2em;text-align:center;">26</span><span style="width:2em;text-align:center;">27</span><span style="width:2em;text-align:center;">28</span>
+                    <span style="width:2em;text-align:center;">29</span><span style="width:2em;text-align:center;">30</span><span style="width:2em;text-align:center;">31</span>
+                  </div>
+                  <div style="font-size: 0.98rem; color: #222;">
+                    <div><span style="color:#fb873f;font-weight:700;">●</span> Booking: Studio - July 10, 2pm</div>
+                    <div><span style="color:#10b981;font-weight:700;">●</span> Event: Workshop - July 20, 10am</div>
+                    <div><span style="color:#3b82f6;font-weight:700;">●</span> Booking: Conf Room - July 25, 4pm</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Bar Chart -->
+            <div class="col-lg-4">
+              <div class="card shadow-sm border-0 p-3" style="border-radius: 1rem;">
+                <div style="font-weight: 700; font-size: 1.15rem; margin-bottom: 1rem;">Applications per Month</div>
+                <canvas id="mockBarChart" height="180"></canvas>
+              </div>
+            </div>
+            <!-- Pie Chart -->
+            <div class="col-lg-4">
+              <div class="card shadow-sm border-0 p-3" style="border-radius: 1rem;">
+                <div style="font-weight: 700; font-size: 1.15rem; margin-bottom: 1rem;">Application Status</div>
+                <canvas id="mockPieChart" height="180"></canvas>
+              </div>
+            </div>
+          </div>
+          <div class="row g-3 mb-2">
+            <!-- Recent Applications Table -->
+            <div class="col-lg-7">
+              <div class="card shadow-sm border-0 p-3" style="border-radius: 1rem;">
+                <div style="font-weight: 700; font-size: 1.15rem; margin-bottom: 1rem;">Recent Applications</div>
+                <table class="table table-striped">
+                  <thead>
+                    <tr><th>Name</th><th>Type</th><th>Date</th><th>Status</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>John Doe</td><td>Internship</td><td>2024-07-10</td><td><span class="badge bg-warning text-dark">Pending</span></td></tr>
+                    <tr><td>Jane Smith</td><td>Job</td><td>2024-07-09</td><td><span class="badge bg-success">Accepted</span></td></tr>
+                    <tr><td>Ali Ben</td><td>Internship</td><td>2024-07-08</td><td><span class="badge bg-danger">Rejected</span></td></tr>
+                    <tr><td>Fatima Zahra</td><td>Job</td><td>2024-07-07</td><td><span class="badge bg-warning text-dark">Pending</span></td></tr>
+                    <tr><td>Omar El</td><td>Internship</td><td>2024-07-06</td><td><span class="badge bg-success">Accepted</span></td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <!-- Recent Activity Feed -->
+            <div class="col-lg-5">
+              <div class="card shadow-sm border-0 p-3" style="border-radius: 1rem;">
+                <div style="font-weight: 700; font-size: 1.15rem; margin-bottom: 1rem;">Recent Activity</div>
+                <ul class="list-group list-group-flush">
+                  <li class="list-group-item">John Doe applied for Internship</li>
+                  <li class="list-group-item">Booking scheduled for July 20th</li>
+                  <li class="list-group-item">Application marked as Reviewed</li>
+                  <li class="list-group-item">Fatima Zahra application accepted</li>
+                  <li class="list-group-item">Ali Ben application rejected</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- DASHBOARD VISUAL COMPONENTS END -->
+      </div>
+    </div>
+  </div>
+  <div class="container-fluid py-2 d-none" id="absenceCardsContainer">
+    <div class="row mb-3">
+      <div class="col-12 d-flex justify-content-end">
+        <button class="btn btn-primary" id="addAbsenceBtn"><i class="fa fa-plus"></i> Add Absence</button>
+      </div>
+    </div>
+    <div class="row g-3 mb-2">
+      <div class="col-lg-6">
+        <div class="card shadow-sm border-0 p-3" style="border-radius: 1rem;">
+          <div style="font-weight: 700; font-size: 1.15rem; margin-bottom: 1rem;">Authorized Absence</div>
+          <ul id="authorizedAbsenceList" class="list-group list-group-flush mb-0"></ul>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="card shadow-sm border-0 p-3" style="border-radius: 1rem;">
+          <div style="font-weight: 700; font-size: 1.15rem; margin-bottom: 1rem;">Non-Authorized Absence</div>
+          <ul id="nonAuthorizedAbsenceList" class="list-group list-group-flush mb-0"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Absence Modal -->
+  <div class="modal fade" id="absenceModal" tabindex="-1" aria-labelledby="absenceModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="absenceModalLabel">Add Absence</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="absenceForm">
+            <div class="mb-3">
+              <label for="absenceName" class="form-label">Name</label>
+              <input type="text" class="form-control" id="absenceName" required>
+            </div>
+            <div class="mb-3">
+              <label for="absenceRole" class="form-label">Role</label>
+              <input type="text" class="form-control" id="absenceRole" required>
+            </div>
+            <div class="mb-3">
+              <label for="absenceDate" class="form-label">Date</label>
+              <input type="date" class="form-control" id="absenceDate" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Type</label><br>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="absenceType" id="absenceTypeAuth" value="authorized" checked>
+                <label class="form-check-label" for="absenceTypeAuth">Authorized</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="absenceType" id="absenceTypeNonAuth" value="non-authorized">
+                <label class="form-check-label" for="absenceTypeNonAuth">Non-Authorized</label>
+              </div>
+            </div>
+            <div class="d-flex justify-content-end">
+              <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancel</button>
+              <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    const API_URL = 'http://localhost:3002/api';
+    let adminUser = '';
+    let adminPass = '';
+    // Show alert
+    function showAlert(msg, type = 'success') {
+      const alertDiv = document.createElement('div');
+      alertDiv.className = `alert alert-${type} alert-top text-center`;
+      alertDiv.innerText = msg;
+      document.getElementById('alert-container').appendChild(alertDiv);
+      setTimeout(() => alertDiv.remove(), 3500);
+    }
+    // Login
+    document.getElementById('adminLoginForm').onsubmit = async function(e) {
+      e.preventDefault();
+      const username = document.getElementById('adminUsername').value;
+      const password = document.getElementById('adminPassword').value;
+      try {
+        const res = await fetch(`${API_URL}/admin/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+        if (res.ok) {
+          adminUser = username;
+          adminPass = password;
+          document.getElementById('loginSection').classList.add('d-none');
+          document.getElementById('dashboardSection').classList.remove('d-none');
+          document.getElementById('absenceCardsContainer').classList.remove('d-none');
+          const dashboardVisuals = document.getElementById('dashboardVisuals');
+          if (dashboardVisuals) {
+            dashboardVisuals.style.display = 'block';
+            console.log('Dashboard visuals displayed');
+          } else {
+            console.log('Dashboard visuals element not found');
+          }
+          console.log('Login successful, showing dashboard visuals');
+          showAlert('Login successful!', 'success');
+          // Small delay to ensure DOM is ready
+          setTimeout(() => {
+            loadDashboard();
+          }, 100);
+        } else {
+          const data = await res.json().catch(() => ({}));
+          showAlert(data.message || 'Invalid credentials', 'danger');
+        }
+      } catch {
+        showAlert('Network error. Try again.', 'danger');
+      }
+    };
+    // Logout
+    document.getElementById('logoutBtn').onclick = function(e) {
+      e.preventDefault();
+      adminUser = '';
+      adminPass = '';
+      document.getElementById('loginSection').classList.remove('d-none');
+      document.getElementById('dashboardSection').classList.add('d-none');
+      document.getElementById('dashboardVisuals').style.display = 'none';
+      document.getElementById('absenceCardsContainer').classList.add('d-none');
+      showAlert('Logged out', 'info');
+    };
+    // Nav pills switching
+    document.getElementById('nav-bookings').onclick = function(e) {
+      e.preventDefault();
+      setActiveSection('bookings');
+    };
+    document.getElementById('nav-jobapps').onclick = function(e) {
+      e.preventDefault();
+      setActiveSection('jobapps');
+    };
+    document.getElementById('nav-internapps').onclick = function(e) {
+      e.preventDefault();
+      setActiveSection('internapps');
+    };
+    function setActiveSection(section) {
+      document.getElementById('nav-bookings').classList.remove('active');
+      document.getElementById('nav-jobapps').classList.remove('active');
+      document.getElementById('nav-internapps').classList.remove('active');
+      document.getElementById('bookingsSection').classList.add('d-none');
+      document.getElementById('jobAppsSection').classList.add('d-none');
+      document.getElementById('internAppsSection').classList.add('d-none');
+      if (section === 'bookings') {
+        document.getElementById('nav-bookings').classList.add('active');
+        document.getElementById('bookingsSection').classList.remove('d-none');
+      } else if (section === 'jobapps') {
+        document.getElementById('nav-jobapps').classList.add('active');
+        document.getElementById('jobAppsSection').classList.remove('d-none');
+      } else if (section === 'internapps') {
+        document.getElementById('nav-internapps').classList.add('active');
+        document.getElementById('internAppsSection').classList.remove('d-none');
+      }
+    }
+    // Load Dashboard
+    async function loadDashboard() {
+      console.log('loadDashboard called');
+      const res = await fetch(`${API_URL}/admin/requests?user=${adminUser}&pass=${adminPass}`);
+      if (!res.ok) return showAlert('Failed to load data', 'danger');
+      const data = await res.json();
+      console.log('Data loaded:', data);
+      console.log('Bookings:', data.bookings);
+      console.log('Applications:', data.applications);
+      renderBookingsTable(data.bookings);
+      renderApplicationsTables(data.applications);
+      renderSummaryCards(data.bookings, data.applications);
+      renderRecentApplications(data.applications);
+      renderRecentActivity(data.bookings, data.applications);
+      // Check if dashboard visuals are visible
+      const visuals = document.getElementById('dashboardVisuals');
+      console.log('Dashboard visuals element:', visuals);
+      console.log('Dashboard visuals display:', visuals ? visuals.style.display : 'not found');
+    }
+    // Render Bookings Table
+    function renderBookingsTable(bookings) {
+      let html = `<h3 class='admin-title mb-4'><i class="fa fa-calendar-check mr-2"></i>Bookings</h3>`;
+      html += `<div class='table-responsive'><table class='table table-bordered table-striped'><thead><tr>`;
+      if (!bookings.length) {
+        html += '<th>No bookings found</th></tr></thead><tbody></tbody></table></div>';
+      } else {
+        html += '<th>Done</th>';
+        Object.keys(bookings[0]).forEach(k => html += `<th>${k}</th>`);
+        html += '</tr></thead><tbody>';
+        bookings.forEach((b, idx) => {
+          html += '<tr>';
+          // Checkbox for done status
+          const checked = b.done ? 'checked' : '';
+          html += `<td><input type="checkbox" class="booking-done-checkbox" data-email="${b.email}" data-date="${b.date}" ${checked}></td>`;
+          Object.values(b).forEach(v => html += `<td>${v}</td>`);
+          html += '</tr>';
+        });
+        html += '</tbody></table></div>';
+      }
+      document.getElementById('bookingsSection').innerHTML = html;
+      // Add event listeners for checkboxes
+      document.querySelectorAll('.booking-done-checkbox').forEach(cb => {
+        cb.addEventListener('change', async function() {
+          const email = this.getAttribute('data-email');
+          const date = this.getAttribute('data-date');
+          const done = this.checked;
+          try {
+            const res = await fetch(`${API_URL}/booking/done?user=${adminUser}&pass=${adminPass}`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ email, date, done })
+            });
+            if (!res.ok) throw new Error('Failed to update');
+            // Optionally show a success message
+          } catch (err) {
+            alert('Failed to update booking status');
+            this.checked = !done; // revert
+          }
+        });
+      });
+    }
+    // Render Job/Intern Applications Tables
+    function renderApplicationsTables(applications) {
+      // Job Applications: those with currentJob or desiredRole
+      const jobApps = applications.filter(a => a.currentJob || a.desiredRole);
+      // Intern Applications: those with school or internshipType
+      const internApps = applications.filter(a => a.school || a.internshipType);
+      // Job Applications Table
+      let jobHtml = `<h3 class='admin-title mb-4'><i class="fa fa-user-friends mr-2"></i>Job Applications</h3>`;
+      jobHtml += `<div class='table-responsive'><table class='table table-bordered table-striped'><thead><tr>`;
+      if (!jobApps.length) {
+        jobHtml += '<th>No job applications found</th></tr></thead><tbody></tbody></table></div>';
+      } else {
+        Object.keys(jobApps[0]).forEach(k => jobHtml += `<th>${k}</th>`);
+        jobHtml += '</tr></thead><tbody>';
+        jobApps.forEach(a => {
+          jobHtml += '<tr>';
+          Object.entries(a).forEach(([key, v]) => {
+            if (key === 'cv' && v && v.endsWith('.pdf')) {
+              jobHtml += `<td><a href="http://localhost:3002${v}" target="_blank" style="color:#3b82f6;font-weight:700;">View PDF</a></td>`;
+            } else {
+              jobHtml += `<td>${v}</td>`;
+            }
+          });
+          jobHtml += '</tr>';
+        });
+        jobHtml += '</tbody></table></div>';
+      }
+      document.getElementById('jobAppsSection').innerHTML = jobHtml;
+      // Intern Applications Table
+      let internHtml = `<h3 class='admin-title mb-4'><i class="fa fa-user-graduate mr-2"></i>Intern Applications</h3>`;
+      internHtml += `<div class='table-responsive'><table class='table table-bordered table-striped'><thead><tr>`;
+      if (!internApps.length) {
+        internHtml += '<th>No intern applications found</th></tr></thead><tbody></tbody></table></div>';
+      } else {
+        Object.keys(internApps[0]).forEach(k => internHtml += `<th>${k}</th>`);
+        internHtml += '</tr></thead><tbody>';
+        internApps.forEach(a => {
+          internHtml += '<tr>';
+          Object.entries(a).forEach(([key, v]) => {
+            if (key === 'cv' && v && v.endsWith('.pdf')) {
+              internHtml += `<td><a href="http://localhost:3002${v}" target="_blank" style="color:#3b82f6;font-weight:700;">View PDF</a></td>`;
+            } else {
+              internHtml += `<td>${v}</td>`;
+            }
+          });
+          internHtml += '</tr>';
+        });
+        internHtml += '</tbody></table></div>';
+      }
+      document.getElementById('internAppsSection').innerHTML = internHtml;
+    }
+    // Add updateAppStatus function to update status in backend and UI
+    window.updateAppStatus = async function(type, idx, status) {
+      // Get current data
+      const res = await fetch(`${API_URL}/admin/requests?user=${adminUser}&pass=${adminPass}`);
+      if (!res.ok) return showAlert('Failed to load data', 'danger');
+      const data = await res.json();
+      let appList = type === 'job' ? data.applications.filter(a => a.currentJob || a.desiredRole) : data.applications.filter(a => a.school || a.internshipType);
+      const app = appList[idx];
+      if (!app) return showAlert('Application not found', 'danger');
+      // Update status in backend (simulate by POST to a new endpoint or PATCH, but for now, update in data.json via a new endpoint is needed)
+      // For demo, just update in localStorage or in-memory (since backend does not support PATCH yet)
+      // But let's try to POST to /api/admin/decision
+      const updateRes = await fetch(`${API_URL}/admin/decision?user=${adminUser}&pass=${adminPass}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: app.email, date: app.date, status })
+      });
+      if (updateRes.ok) {
+        showAlert('Application updated!', 'success');
+        loadDashboard();
+      } else {
+        showAlert('Failed to update application', 'danger');
+      }
+    }
+    // Render Summary Cards
+    function renderSummaryCards(bookings, applications) {
+      console.log('renderSummaryCards called with:', { bookings: bookings.length, applications: applications.length });
+      const jobApps = applications.filter(a => a.currentJob || a.desiredRole);
+      const internApps = applications.filter(a => a.school || a.internshipType);
+      const now = new Date();
+      console.log('Current date:', now);
+      const upcomingBookings = bookings.filter(b => {
+        if (!b.startDateTime) return false;
+        const bookingDate = new Date(b.startDateTime);
+        console.log('Booking date:', b.startDateTime, 'Parsed:', bookingDate, 'Is future:', bookingDate > now);
+        return bookingDate > now;
+      });
+      console.log('Total bookings:', bookings.length, 'Upcoming:', upcomingBookings.length);
+      // For demo, pending reviews = applications with no comments or status
+      const pendingReviews = applications.filter(a => !a.status || a.status === 'Pending').length;
+      // Update summary cards - use a more specific selector
+      const cards = document.querySelectorAll('#dashboardVisuals .card');
+      console.log('Found summary cards:', cards.length);
+      if (cards.length >= 4) {
+        console.log('Updating cards with values:', { jobApps: jobApps.length, internApps: internApps.length, upcomingBookings: upcomingBookings.length, pendingReviews });
+        cards[0].querySelector('div:last-child').textContent = jobApps.length;
+        cards[1].querySelector('div:last-child').textContent = internApps.length;
+        cards[2].querySelector('div:last-child').textContent = upcomingBookings.length;
+        cards[3].querySelector('div:last-child').textContent = pendingReviews;
+        console.log('Cards updated successfully');
+      } else {
+        console.log('Not enough cards found:', cards.length);
+        console.log('Dashboard visuals not found or not enough cards');
+      }
+    }
+    // Render Recent Applications Table
+    function renderRecentApplications(applications) {
+      const table = document.querySelector('.container-fluid .table tbody');
+      if (!table) return;
+      // Sort by date descending
+      const sorted = [...applications].sort((a, b) => new Date(b.date) - new Date(a.date));
+      // Only show 5 most recent
+      const rows = sorted.slice(0, 5).map(app => {
+        const name = app.fullName || '-';
+        const type = app.currentJob || app.desiredRole ? 'Job' : 'Internship';
+        const date = app.date ? app.date.split('T')[0] : '-';
+        // For demo, status: if comments or status field, else Pending
+        let status = app.status || (app.comments && app.comments.toLowerCase().includes('accept') ? 'Accepted' : (app.comments && app.comments.toLowerCase().includes('reject') ? 'Rejected' : 'Pending'));
+        let badge = 'bg-warning text-dark';
+        if (status === 'Accepted') badge = 'bg-success';
+        else if (status === 'Rejected') badge = 'bg-danger';
+        return `<tr><td>${name}</td><td>${type}</td><td>${date}</td><td><span class="badge ${badge}">${status}</span></td></tr>`;
+      }).join('');
+      table.innerHTML = rows;
+    }
+    // Render Recent Activity Feed
+    function renderRecentActivity(bookings, applications) {
+      const feed = document.querySelector('.container-fluid .list-group');
+      if (!feed) return;
+      let items = [];
+      // Most recent 5 activities: applications and bookings
+      const acts = [];
+      applications.forEach(app => {
+        acts.push({
+          type: 'application',
+          name: app.fullName || '-',
+          subtype: app.currentJob || app.desiredRole ? 'Job' : 'Internship',
+          date: app.date,
+          status: app.status || (app.comments && app.comments.toLowerCase().includes('accept') ? 'Accepted' : (app.comments && app.comments.toLowerCase().includes('reject') ? 'Rejected' : 'Pending'))
+        });
+      });
+      bookings.forEach(b => {
+        acts.push({
+          type: 'booking',
+          name: b.fullName || '-',
+          date: b.startDateTime || b.date,
+          eventType: b.eventType || 'Booking'
+        });
+      });
+      acts.sort((a, b) => new Date(b.date) - new Date(a.date));
+      items = acts.slice(0, 5).map(act => {
+        if (act.type === 'application') {
+          if (act.status === 'Accepted') return `<li class="list-group-item">${act.name} application accepted</li>`;
+          if (act.status === 'Rejected') return `<li class="list-group-item">${act.name} application rejected</li>`;
+          return `<li class="list-group-item">${act.name} applied for ${act.subtype}</li>`;
+        } else {
+          return `<li class="list-group-item">${act.name} booked (${act.eventType})</li>`;
+        }
+      });
+      feed.innerHTML = items.join('');
+    }
+    // Mock Bar Chart
+    new Chart(document.getElementById('mockBarChart').getContext('2d'), {
+      type: 'bar',
+      data: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+        datasets: [
+          { label: 'Job Apps', data: [8, 12, 10, 15, 18, 14, 16], backgroundColor: '#fb873f' },
+          { label: 'Intern Apps', data: [5, 7, 6, 9, 11, 8, 10], backgroundColor: '#3b82f6' }
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: true } },
+        scales: {
+          x: { grid: { display: false }, ticks: { color: '#222' } },
+          y: { grid: { color: '#eee' }, ticks: { color: '#222', stepSize: 5 } }
+        }
+      }
+    });
+    // Mock Pie Chart
+    new Chart(document.getElementById('mockPieChart').getContext('2d'), {
+      type: 'pie',
+      data: {
+        labels: ['Accepted', 'Pending', 'Rejected'],
+        datasets: [{
+          data: [60, 25, 15],
+          backgroundColor: ['#10b981', '#fb873f', '#ef4444']
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: true } }
+      }
+    });
+    // Absence logic
+    const defaultAbsences = [
+      { name: 'Youssef Nainia', role: 'Director', date: '2024-07-01', type: 'authorized' },
+      { name: 'Fatima Zahra', role: 'HR', date: '2024-07-02', type: 'authorized' },
+      { name: 'Karim', role: 'Developer', date: '2024-07-03', type: 'non-authorized' },
+      { name: 'Karim', role: 'Developer', date: '2024-07-04', type: 'non-authorized' },
+      { name: 'Karim', role: 'Developer', date: '2024-07-05', type: 'non-authorized' },
+      { name: 'Sarah K.', role: 'Designer', date: '2024-07-06', type: 'non-authorized' },
+      { name: 'John M.', role: 'Marketing', date: '2024-07-07', type: 'authorized' },
+      { name: 'Lisa S.', role: 'Support', date: '2024-07-08', type: 'non-authorized' },
+      { name: 'Lisa S.', role: 'Support', date: '2024-07-09', type: 'non-authorized' },
+    ];
+    let absences = [];
+    // Load from localStorage if available
+    try {
+      const stored = localStorage.getItem('ebf_absences');
+      absences = stored ? JSON.parse(stored) : [...defaultAbsences];
+    } catch (e) {
+      absences = [...defaultAbsences];
+    }
+
+    function saveAbsences() {
+      localStorage.setItem('ebf_absences', JSON.stringify(absences));
+    }
+    function renderAbsenceCards() {
+      // Count non-authorized absences per person+role
+      const nonAuthCounts = {};
+      absences.forEach(a => {
+        if (a.type === 'non-authorized') {
+          const key = a.name + '|' + a.role;
+          nonAuthCounts[key] = (nonAuthCounts[key] || 0) + 1;
+        }
+      });
+      // Render authorized
+      const authList = document.getElementById('authorizedAbsenceList');
+      authList.innerHTML = absences.filter(a => a.type === 'authorized').map(a =>
+        `<li class="list-group-item d-flex justify-content-between align-items-center">
+          <span>${a.name}</span><span class="badge bg-secondary">${a.role}</span><span class="text-muted ms-2">${a.date}</span>
+        </li>`
+      ).join('');
+      // Render non-authorized
+      const nonAuthList = document.getElementById('nonAuthorizedAbsenceList');
+      // Group by name+role and count
+      const grouped = {};
+      absences.filter(a => a.type === 'non-authorized').forEach(a => {
+        const key = a.name + '|' + a.role;
+        if (!grouped[key]) grouped[key] = { ...a, count: 0, dates: [] };
+        grouped[key].count++;
+        grouped[key].dates.push(a.date);
+      });
+      nonAuthList.innerHTML = Object.values(grouped).map(a =>
+        `<li class="list-group-item d-flex justify-content-between align-items-center">
+          <span style="${a.count >= 3 ? 'color: #ef4444; font-weight: bold;' : ''}">${a.name}${a.count > 1 ? ' (' + a.count + 'x)' : ''}</span>
+          <span class="badge bg-secondary">${a.role}</span>
+          <span class="text-muted ms-2">${a.dates.join(', ')}</span>
+        </li>`
+      ).join('');
+      saveAbsences(); // Always save after rendering (in case of any changes)
+    }
+    document.getElementById('addAbsenceBtn').onclick = function() {
+      const modal = new bootstrap.Modal(document.getElementById('absenceModal'));
+      document.getElementById('absenceForm').reset();
+      modal.show();
+    };
+    document.getElementById('absenceForm').onsubmit = function(e) {
+      e.preventDefault();
+      const name = document.getElementById('absenceName').value.trim();
+      const role = document.getElementById('absenceRole').value.trim();
+      const date = document.getElementById('absenceDate').value;
+      const type = document.querySelector('input[name="absenceType"]:checked').value;
+      if (!name || !role || !date) return;
+      absences.push({ name, role, date, type });
+      saveAbsences();
+      renderAbsenceCards();
+      bootstrap.Modal.getInstance(document.getElementById('absenceModal')).hide();
+    };
+    renderAbsenceCards();
+  </script>
+</body>
+</html> 
